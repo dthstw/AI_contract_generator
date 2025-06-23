@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+
+# Python virtual environments
+.env
+.venv/
+venv/
+
+# Logs and junk
+*.log
+__pycache__/
+*.pyc
+
+#my testing files
+src/battle.py
+src/sysarg.py
+src/argparse_test.py

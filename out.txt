@@ -1,0 +1,25 @@
+Loan Agreement
+
+THIS LOAN AGREEMENT ("Agreement") is made as of this [Date] by and between [Lender's Name], with an address of [Lender's Address] ("Lender") and [Borrower's Name], with an address of [Borrower's Address] ("Borrower"). Each of the Lender and Borrower may be referred to individually as a "Party" and collectively as the "Parties."
+
+1. LOAN AMOUNT: The Lender hereby agrees to lend to the Borrower, and the Borrower hereby agrees to borrow from the Lender, the sum of [Loan Amount] (the "Loan"), under the terms and conditions set forth in this Agreement.
+
+2. INTEREST RATE: The Loan shall bear interest at the rate of [Interest Rate]% per annum.
+
+3. REPAYMENT: The Borrower shall repay the Loan in [Number of Payments] installments of [Amount per Installment], starting on [First Payment Date] and continuing every [Payment Interval] until the Loan is repaid in full.
+
+4. TERM: The term of this Loan is [Loan Term], commencing on the date of this Agreement.
+
+5. SECURITY: [Description of Security, if applicable, otherwise state "This Loan is unsecured."]
+
+6. GOVERNING LAW: This Agreement shall be governed in all respects by the laws of [State/Country].
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the date first above written.
+
+
+_______________________________     
+[Lender's Name]
+
+
+_______________________________
+[Borrower's Name]

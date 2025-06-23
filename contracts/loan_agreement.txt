@@ -1,0 +1,1 @@
+Loan Agreement: Party A, Company_A, agrees to lend to Party B, Company_B, the sum of [amount] at an interest rate of [interest rate] percent, repayable on [repayment date].
