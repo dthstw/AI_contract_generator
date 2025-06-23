@@ -17,60 +17,54 @@ from agents import (
     set_tracing_disabled,
 )
 
-
 import datetime
-from config.model_provider import CustomModelProvider
-
+from src.config.model_provider import CustomModelProvider
+from src.prompts.contract_prompt import (
+    build_lease_agreement_prompt,
+    build_outsourcing_contract_prompt,
+    build_filename
+)
+from src.agents.contract_agent import create_contract_agent
 
 CUSTOM_MODEL_PROVIDER = CustomModelProvider()
 
-parser = argparse.ArgumentParser(description="Generate two types of contracts")
-
-parser.add_argument('-c', '--Args',
-                nargs=4,
-                type=str,
-                help='Specify contract_type, desired number_of_words, party_a, party_b')
-
-args = parser.parse_args()
-
-arguments = vars(parser.parse_args())
-
-# Save document tool
-@function_tool
-def save_str_to_disc(document: str, filename: str, directory: str = "contracts") -> str:
-    os.makedirs(directory, exist_ok=True)
-    path = os.path.join(directory, filename)
-    with open(path, 'w', encoding='utf-8') as f:
-        f.write(document) 
-        
-    return f"Contract saved to: {path}"
-
-
-# Prompt generation
-def build_generation_prompt(contract_type: str, number_of_words: int, party_a: str, party_b: str) -> str:
-    return (
-        f"Generate an English {contract_type.replace('_', ' ')} contract with approximately {number_of_words} words.\n"
-        f"Party A: {party_a}\nParty B: {party_b}\n"
-        f"After generating, save it to the local disc using the available tool."
-    )
-    
-    
-# Filename generation
-def build_filename(contract_type: str, party_a: str, party_b: str) -> str:
-    date_str = datetime.now().strftime("%Y%m%d")
-    return f"{contract_type}_{date_str}_{party_a}_{party_b}.txt"
-
-
+def get_prompt(**kwargs) -> str:
+    contract_type = kwargs.pop("contract_type", None)
+    if contract_type == "lease_agreement":
+        return build_lease_agreement_prompt(**kwargs)
+    elif contract_type == "outsourcing_contract":
+        return build_outsourcing_contract_prompt(**kwargs)
+    else:
+        raise ValueError(f"Unknown contract_type: {contract_type}")
 
 
 async def main():
+    #Argument parsing
+    parser = argparse.ArgumentParser(description="Generate a contract")
+    parser.add_argument("--contract_type", required=True, type=str)
+    parser.add_argument("--number_of_words", required=True, type=int)
+    parser.add_argument("--party_a", required=True, type=str)
+    parser.add_argument("--party_b", required=True, type=str)
+    args = parser.parse_args()
     
-    agent = Agent(name="Assistant", instructions=build_generation_prompt(arguments["Args"][0], int(arguments["Args"][1]), arguments["Args"][2], arguments["Args"][3]), tools=[save_str_to_disc])
+    contract_type = args.contract_type
 
+    #Args for prompt
+    args_dict = vars(args)
+    
+    prompt = get_prompt(**args_dict)
+    
+    filename = build_filename(
+        contract_type=contract_type, 
+        party_a=args.party_a,
+        party_b=args.party_b,
+    )
+    
+    agent = create_contract_agent(prompt)
     # This will use the custom model provider
     result = await Runner.run(
         agent,
-        "Generate loan agreement in save it in the local disc",
+        f"Generate contract and save it to the local disk as {filename}",
         run_config=RunConfig(model_provider=CUSTOM_MODEL_PROVIDER),
     )
     print(result.final_output)

@@ -15,3 +15,5 @@ __pycache__/
 src/battle.py
 src/sysarg.py
 src/argparse_test.py
+
+contracts/
