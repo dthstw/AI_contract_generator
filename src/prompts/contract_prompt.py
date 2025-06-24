@@ -1,7 +1,7 @@
 from datetime import datetime
 
 #Prompt constructor
-def build_lease_agreement_prompt(number_of_words: int, party_a: str, party_b: str) -> str:
+def build_lease_agreement_prompt(contract_type: str, number_of_words: int, party_a: str, party_b: str) -> str:
     return (
         f"{party_a} と {party_b} の間で締結される賃貸借契約書を作成してください。\n"
         f"契約書は日本語で、全体で約 {number_of_words} 語程度の長さとしてください。\n"
@@ -9,7 +9,7 @@ def build_lease_agreement_prompt(number_of_words: int, party_a: str, party_b: st
         f"生成後は、提供されている保存ツールを使ってローカルディスクに保存してください。"
     )
     
-def build_outsourcing_contract_prompt(number_of_words: int, party_a: str, party_b: str) -> str:
+def build_outsourcing_contract_prompt(contract_type: str, number_of_words: int, party_a: str, party_b: str) -> str:
     return (
         f"{party_a} と {party_b} の間で締結される業務委託契約書を作成してください。\n"
         f"契約書は日本語で、全体で約 {number_of_words} 語程度の長さとしてください。\n"
