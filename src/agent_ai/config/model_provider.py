@@ -1,9 +1,7 @@
 
 import os
 from dotenv import load_dotenv
-
-from openai import AsyncOpenAI
-
+from langfuse.openai import AsyncOpenAI
 from agents import (
     Model,
     ModelProvider,
@@ -16,6 +14,7 @@ load_dotenv()
 class CustomModelProvider(ModelProvider):
     """Allows to use both OpenAI api key or model from OpenRouter"""
     def __init__(self):
+        
         use_openrouter = os.getenv("USE_OPENROUTER", "false").lower() == "true"
 
         if use_openrouter:
@@ -35,7 +34,12 @@ class CustomModelProvider(ModelProvider):
                     "Please set OPENAI_API_KEY, OPENAI_MODEL also check USE_OPENROUTER=false via env var or code."
                 )
         
-        self.client = AsyncOpenAI(api_key=api_key, base_url=base_url)
+        self.client = AsyncOpenAI(api_key=api_key, 
+                                  base_url=base_url,
+                                  default_headers={
+                                      "HTTP-Referer": os.getenv("OPENROUTER_REF", "http://localhost"),
+                                      "X-Title": os.getenv("OPENROUTER_TITLE", "AI_Agent"),
+                                      })
         self.model_name = model_name
         
         
@@ -43,4 +47,5 @@ class CustomModelProvider(ModelProvider):
         return OpenAIChatCompletionsModel(
             model=model_name or self.model_name,
             openai_client=self.client,
+            trace_completions=False,
         )
