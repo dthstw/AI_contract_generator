@@ -1,9 +1,9 @@
 import json
 from agents import Runner, RunConfig
-from src.prompts.dispatcher import get_prompt
-from src.prompts.contract_prompt import build_filename
-from src.agents.contract_agent import create_contract_agent
-from src.config.model_provider import CustomModelProvider
+from agent_ai.prompts.dispatcher import get_prompt
+from agent_ai.prompts.contract_prompt import build_filename
+from agent_ai.custom_agents.contract_agent import create_contract_agent
+from agent_ai.config.model_provider import CustomModelProvider
 
 CUSTOM_MODEL_PROVIDER = CustomModelProvider()
 

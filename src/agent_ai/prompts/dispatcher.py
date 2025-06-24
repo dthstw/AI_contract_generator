@@ -1,4 +1,4 @@
-from src.prompts.contract_prompt import (
+from agent_ai.prompts.contract_prompt import (
     build_lease_agreement_prompt,
     build_outsourcing_contract_prompt,
 )

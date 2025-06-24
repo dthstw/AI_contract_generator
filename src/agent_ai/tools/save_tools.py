@@ -40,6 +40,6 @@ def save_str_to_disc(document: str, filename: str, directory: str = "contracts")
     return json.dumps({
     "filename": final_name,
     "path": path,
-    "message": f"✅ Contract saved in `{directory}` as `{final_name}`"
+    "message": f"Contract saved in `{directory}` as `{final_name}`"
     }, ensure_ascii=False)
 
