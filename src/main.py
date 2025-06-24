@@ -3,6 +3,7 @@ import argparse
 import asyncio
 import os
 from dotenv import load_dotenv
+import json
 
 from openai import AsyncOpenAI
 
@@ -64,10 +65,15 @@ async def main():
     # This will use the custom model provider
     result = await Runner.run(
         agent,
-        f"Generate contract and save it to the local disk as {filename}",
+        input=(
+        f"Use the `save_str_to_disc` tool to save the contract.\n"
+        f"Use the filename: {filename}.\n"
+        f"Only return the result from the tool call."
+        ),
         run_config=RunConfig(model_provider=CUSTOM_MODEL_PROVIDER),
     )
-    print(result.final_output)
+    
+    print(json.loads(result.final_output)["message"])
 
     # If you uncomment this, it will use OpenAI directly, not the custom provider
     # result = await Runner.run(
