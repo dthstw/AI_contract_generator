@@ -18,6 +18,6 @@ def build_outsourcing_contract_prompt(contract_type: str, number_of_words: int, 
     )
 
 # Filename generation
-def build_filename(contract_type: str, party_a: str, party_b: str) -> str:
+def build_filename(contract_type: str, number_of_words: int, party_a: str, party_b: str) -> str:
     date_str = datetime.now().strftime("%Y%m%d")
     return f"{contract_type}_{date_str}_{party_a}_{party_b}.txt"
