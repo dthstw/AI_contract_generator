@@ -24,7 +24,7 @@ def parse_args():
     Returns:
         argparse.Namespace: validated arguments
     """
-    parser = argparse.ArgumentParser(description="📄 Generate a Japanese business contract")
+    parser = argparse.ArgumentParser(description="Generate a Japanese business contract")
 
     parser.add_argument(
         "--contract_type",
