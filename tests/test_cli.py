@@ -1,5 +1,5 @@
 import pytest
-from agent_ai.cli import number_of_words_validator, non_empty_string
+from src.cli import number_of_words_validator, non_empty_string
 import argparse
 
 # number_of_words_validator

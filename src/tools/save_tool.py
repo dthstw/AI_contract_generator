@@ -1,10 +1,20 @@
 import os
 from agents import function_tool
 import json
+from langfuse import observe
 
 def get_unique_filename(base: str, ext: str, directory: str) -> str:
     """
     Generate a unique file path by appending an incremental index if needed.
+    Ensures that the file does not overwrite an existing one by adding a counter.
+
+    Args:
+        base (str): The base name of the file (without extension).
+        ext (str): The file extension (e.g., ".txt", ".json").
+        directory (str): The directory where the file is intended to be saved.
+
+    Returns:
+        str: A unique file path that does not currently exist.
     """
     ext = ext if ext else ".txt"
     base = base.rstrip('.')  # Avoid double dots like 'file..txt'
@@ -24,10 +34,21 @@ def get_unique_filename(base: str, ext: str, directory: str) -> str:
         counter += 1
 
 @function_tool
+@observe
 def save_str_to_disc(document: str, filename: str, directory: str = "contracts") -> dict:
     """
     Save the document string to a uniquely named file in the given directory.
-    Returns a dictionary with filename, path, and a message.
+    This function generates a unique filename to prevent overwriting existing files.
+
+    Args:
+        document (str): The string content to be saved to the file.
+        filename (str): The desired base filename (e.g., "my_contract.txt").
+        directory (str, optional): The directory where the file will be saved.
+                                   Defaults to "contracts".
+
+    Returns:
+        dict: A dictionary containing the final filename, the full path to the file,
+              and a success message.
     """
     base, ext = os.path.splitext(filename)
     path = get_unique_filename(base, ext, directory)
@@ -42,4 +63,3 @@ def save_str_to_disc(document: str, filename: str, directory: str = "contracts")
     "path": path,
     "message": f"Contract saved in `{directory}` as `{final_name}`"
     }, ensure_ascii=False)
-

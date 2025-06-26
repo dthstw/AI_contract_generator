@@ -1,5 +1,5 @@
 import pytest
-from agent_ai.prompts.dispatcher import get_prompt
+from src.prompts.dispatcher import get_prompt
 
 def test_get_prompt_lease_agreement():
     prompt = get_prompt(

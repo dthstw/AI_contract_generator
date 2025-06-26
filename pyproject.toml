@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-agent-layerx"
+version = "0.1.0"
+description = "AI Agent for generating and managing business contracts."
+readme = "README.md"
+requires-python = ">=3.9" # Adjust if your actual Python version is different
+license = { text = "MIT" }
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }, # <<< REMEMBER TO CHANGE THIS
+]
+keywords = ["AI", "Agent", "Contract Generation", "LLM", "LayerX"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Office/Business",
+]
+
+dependencies = [
+    # Core Agent Framework and Observability
+    "langfuse==3.0.5",          # Directly imported in main.py, cli.py, agent_runner.py, dispatcher.py, save_tool.py
+    "python-dotenv==1.1.0",     # Directly imported in main.py, cli.py
+    "openai-agents==0.0.19",    # Provides 'agents' module, imported in agent_runner.py, model_provider.py, contract_agent.py, save_tool.py
+    "openai==1.90.0",           # Used via langfuse.openai in model_provider.py, implying it needs to be installed
+]
+
+[project.scripts]
+ai_agent = "main:main" # Maps the 'ai_agent' command to the main() function in src/main.py
+
+[tool.setuptools.packages.find]
+where = ["src"] # Tells setuptools to find Python packages inside the 'src' directory
+
+[project.optional-dependencies]
+dev = [ # Dependencies specifically for development and testing
+    "pytest==8.4.1",
+    "pytest-asyncio==1.0.0",
+    "iniconfig==2.1.0",
+    "pluggy==1.6.0",
+    # Add other dev tools you might use (e.g., black, ruff, mypy)
+    # Most of the remaining packages from your requirements.txt
+    # are either transitive dependencies of the above, or are
+    # development/testing tools. If you use them directly in
+    # tests or dev scripts, they belong here.
+]

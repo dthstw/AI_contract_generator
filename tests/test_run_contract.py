@@ -1,5 +1,5 @@
 import pytest
-from agent_ai.agent_runner import run_contract
+from src.core.agent_runner import run_contract
 from agents import Runner
 
 @pytest.mark.asyncio

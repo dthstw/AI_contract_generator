@@ -1,0 +1,27 @@
+Metadata-Version: 2.4
+Name: ai-agent-layerx
+Version: 0.1.0
+Summary: AI Agent for generating and managing business contracts.
+Author-email: Your Name <your.email@example.com>
+License: MIT
+Keywords: AI,Agent,Contract Generation,LLM,LayerX
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Office/Business
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: langfuse==3.0.5
+Requires-Dist: python-dotenv==1.1.0
+Requires-Dist: openai-agents==0.0.19
+Requires-Dist: openai==1.90.0
+Provides-Extra: dev
+Requires-Dist: pytest==8.4.1; extra == "dev"
+Requires-Dist: pytest-asyncio==1.0.0; extra == "dev"
+Requires-Dist: iniconfig==2.1.0; extra == "dev"
+Requires-Dist: pluggy==1.6.0; extra == "dev"

@@ -1,0 +1,10 @@
+langfuse==3.0.5
+python-dotenv==1.1.0
+openai-agents==0.0.19
+openai==1.90.0
+
+[dev]
+pytest==8.4.1
+pytest-asyncio==1.0.0
+iniconfig==2.1.0
+pluggy==1.6.0
