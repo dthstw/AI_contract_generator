@@ -4,8 +4,9 @@ from agent_ai.prompts.dispatcher import get_prompt
 from agent_ai.prompts.contract_prompt import build_filename
 from agent_ai.custom_agents.contract_agent import create_contract_agent
 from agent_ai.config.model_provider import OpenAIModelProvider
+from langfuse import observe, get_client
 import logfire
-from langfuse import observe
+
  
 # Configure logfire instrumentation.
 logfire.configure(
@@ -15,7 +16,7 @@ logfire.configure(
 # This method automatically patches the OpenAI Agents SDK to send logs via OTLP to Langfuse.
 logfire.instrument_openai_agents()
 
-@observe()
+@observe
 async def run_contract(args: dict) -> str:
     prompt = get_prompt(**args)
     filename = build_filename(**args)
@@ -40,3 +41,8 @@ async def run_contract(args: dict) -> str:
         raise RuntimeError(f"Failed to parse LLM output: {result.final_output}") from e
     except Exception as e:
         raise RuntimeError(f"Contract generation failed: {e}")
+    
+langfuse = get_client()
+langfuse.flush()
+    
+

@@ -1,4 +1,10 @@
 import argparse
+from dotenv import load_dotenv
+from langfuse import observe, get_client
+import sys
+
+load_dotenv()
+langfuse = get_client()
 
 
 def number_of_words_validator(value: str) -> int:
@@ -10,11 +16,13 @@ def number_of_words_validator(value: str) -> int:
     except ValueError:
         raise argparse.ArgumentTypeError("number_of_words must be an integer.")
 
+
 def non_empty_string(value: str) -> str:
     if not value.strip():
         raise argparse.ArgumentTypeError("This field cannot be empty or whitespace.")
     return value
 
+@observe
 def parse_args():
     parser = argparse.ArgumentParser(description="Generate a Japanese business contract")
 
@@ -46,5 +54,15 @@ def parse_args():
         help="Name of Party B (must not be empty)"
     )
 
-    return parser.parse_args() 
-
+    try:
+        return parser.parse_args()
+    except SystemExit as e:
+        # Only catch argparse error (like empty --party_b)
+        with langfuse.start_as_current_span(name="argparse_missing_value_error", input={"argv": sys.argv}) as span:
+            span.update(
+                level="ERROR",
+                status_message="argparse failed: likely missing required value",
+                metadata={"argv": sys.argv}
+            )
+            langfuse.flush()
+        raise

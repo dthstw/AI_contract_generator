@@ -7,11 +7,10 @@ from agents import (
     ModelProvider,
     OpenAIChatCompletionsModel,
 )
-from agent_ai.langfuse_provider import langfuse
-
+from langfuse import observe
 
 load_dotenv()
-
+@observe
 class OpenAIModelProvider(ModelProvider):
     def __init__(self):
         self.client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
