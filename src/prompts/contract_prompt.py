@@ -4,10 +4,12 @@ import re
 def _sanitize_filename_part(name: str) -> str:
     """
     Sanitizes a string to be suitable for a filename part.
-    Replaces non-alphanumeric characters (except underscores and hyphens) with underscores.
-    Strips leading/trailing underscores and multiple consecutive underscores.
+    Preserves Japanese characters and alphanumeric characters.
+    Replaces unsafe filename characters with underscores.
     """
-    sanitized_name = re.sub(r'[^a-zA-Z0-9_-]', '_', name)
+    # Remove only characters that are problematic for filenames
+    # Keep: alphanumeric, Japanese characters, underscores, hyphens
+    sanitized_name = re.sub(r'[<>:"/\\|?*\x00-\x1f]', '_', name)
     sanitized_name = re.sub(r'_{2,}', '_', sanitized_name)
     sanitized_name = sanitized_name.strip('_')
     return sanitized_name if sanitized_name else "unknown"
