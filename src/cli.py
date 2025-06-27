@@ -82,6 +82,26 @@ def parse_args():
         help="Folder to save the generated contract (default: contracts)"
     )
 
+    # --- Subparser for 'review_contract' command ---
+    review_parser = subparsers.add_parser(
+        "review_contract",
+        help="Review an existing contract file."
+    )
+
+    review_parser.add_argument(
+        "--contract_file",
+        required=True,
+        type=str,
+        help="Path to the contract file to review (e.g., contracts/my_contract.txt)"
+    )
+
+    review_parser.add_argument(
+        "--review_type",
+        default="comprehensive",
+        choices=["comprehensive", "summary", "risk_analysis"],
+        help="Type of review to perform (default: comprehensive)"
+    )
+
     try:
         parsed_args = parser.parse_args()
         # If no subcommand is given, print help and exit
@@ -89,12 +109,8 @@ def parse_args():
             parser.print_help()
             sys.exit(1)
 
-        # Process parsed_args to remove the 'command' attribute
-        # and return a clean Namespace or a dict
-        cleaned_args = argparse.Namespace(**vars(parsed_args))
-        del cleaned_args.command # Remove the 'command' attribute
-
-        return cleaned_args # Return the cleaned Namespace
+        # Return the parsed args with command attribute intact
+        return parsed_args
     except SystemExit as e:
         _langfuse_client = get_client()
         with _langfuse_client.start_as_current_span(name="argparse_error") as span:

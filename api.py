@@ -38,6 +38,15 @@ async def read_root():
     """Serve the main HTML page"""
     return FileResponse("index.html")
 
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for Docker container"""
+    return {
+        "status": "healthy",
+        "service": "AI Agent LayerX",
+        "version": "1.0.0"
+    }
+
 @app.post("/contract")
 async def contract(contract_request: ContractRequest):
     """Generate a contract based on the provided parameters"""
