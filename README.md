@@ -18,7 +18,7 @@ AI-powered Japanese business contract generator with web interface and CLI tools
 ## Quick Start
 
 ```bash
-git clone <your-repository-url>
+git clone <this-repository-url>
 cd <your-project-directory>
 chmod +x setup.sh
 ./setup.sh
