@@ -1,4 +1,4 @@
-# 🤖 AI Agent LayerX
+# 🤖 AI Agent
 
 **AI-powered Japanese Business Contract Generator with Web Interface**
 
@@ -110,7 +110,7 @@ openssl rand -hex 32
 Create a `.env` file in your AI Agent project directory:
 
 ```bash
-cd ../ai-agent-layerx  # Back to your project
+cd ../ai-agent  # Back to your project
 touch .env
 ```
 
@@ -157,7 +157,7 @@ The CLI provides powerful automation capabilities:
 ai_agent generate_contract \
   --contract_type lease_agreement \
   --number_of_words 1000 \
-  --party_a "LayerX Corp" \
+  --party_a "A Corp" \
   --party_b "Tenant Company"
 ```
 
@@ -198,7 +198,7 @@ ai_agent generate_contract \
 Contracts are automatically saved with descriptive filenames:
 ```
 contracts/
-├── lease_agreement_20250627_LayerX_Corp_Tenant_Company.txt
+├── lease_agreement_20250627_A_Corp_Tenant_Company.txt
 ├── outsourcing_contract_20250627_Client_Corp_Service_Provider.txt
 └── ...
 ```
@@ -271,7 +271,7 @@ pytest --cov=src
 ### Project Structure
 
 ```
-ai-agent-layerx/
+ai-agent/
 ├── src/                     # Source code
 │   ├── cli.py              # Command line interface
 │   ├── main.py             # Main application entry
@@ -295,13 +295,6 @@ ai-agent-layerx/
 - **Frontend**: HTML/JavaScript (simple interface)
 - **Packaging**: Modern Python packaging with pyproject.toml
 
-## 🤝 Contributing
-
-This project demonstrates advanced AI agent architecture with professional contract generation. The modular design allows for easy extension to new contract types and customization of generation parameters.
-
-## 📄 License
-
-MIT License - See LICENSE file for details.
 
 ---
 
