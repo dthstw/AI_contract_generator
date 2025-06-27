@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# AI Agent LayerX Setup Script
+# AI Agent Setup Script
 # This script helps you set up the complete AI Agent stack with Langfuse
 
 set -e
 
-echo "🤖 AI Agent LayerX - Setup Script"
-echo "=================================="
+echo "🤖 AI Agent - Setup Script"
+echo "=========================="
 echo ""
 
 # Check if Docker is installed
@@ -16,14 +16,32 @@ if ! command -v docker &> /dev/null; then
     exit 1
 fi
 
-# Check if Docker Compose is installed
-if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
-    echo "❌ Docker Compose is not installed. Please install Docker Compose first."
-    echo "   Visit: https://docs.docker.com/compose/install/"
+# Check Docker Compose installation and determine which command to use
+DOCKER_COMPOSE_CMD=""
+
+# Try modern Docker Compose (docker compose) first
+if docker compose version &> /dev/null; then
+    DOCKER_COMPOSE_CMD="docker compose"
+    echo "✅ Docker and Docker Compose (v2) are installed"
+# Try legacy Docker Compose (docker-compose) as fallback
+elif command -v docker-compose &> /dev/null && docker-compose version &> /dev/null; then
+    DOCKER_COMPOSE_CMD="docker-compose"
+    echo "✅ Docker and Docker Compose (v1) are installed"
+else
+    echo "❌ Docker Compose is not properly installed or working."
+    echo ""
+    echo "🔧 Try these solutions:"
+    echo "1. Install Docker Compose v2 (recommended):"
+    echo "   sudo apt-get update && sudo apt-get install docker-compose-plugin"
+    echo ""
+    echo "2. Or install Docker Compose v1:"
+    echo "   sudo curl -L \"https://github.com/docker/compose/releases/download/v2.21.0/docker-compose-\$(uname -s)-\$(uname -m)\" -o /usr/local/bin/docker-compose"
+    echo "   sudo chmod +x /usr/local/bin/docker-compose"
+    echo ""
+    echo "3. Or use Docker Compose from pip:"
+    echo "   pip install docker-compose"
     exit 1
 fi
-
-echo "✅ Docker and Docker Compose are installed"
 echo ""
 
 # Create .env file if it doesn't exist
@@ -54,21 +72,27 @@ echo "✅ Contracts directory created"
 echo ""
 
 # Build and start the services
-echo "🚀 Building and starting AI Agent LayerX stack..."
+echo "🚀 Building and starting AI Agent stack..."
 echo "   This may take a few minutes on first run..."
 echo ""
 
-if docker compose version &> /dev/null; then
-    docker compose up -d --build
-else
-    docker-compose up -d --build
+# Check for problematic folder names that could cause Docker image naming issues
+FOLDER_NAME=$(basename "$PWD")
+if [[ "$FOLDER_NAME" =~ [^a-zA-Z0-9._-] ]] || [[ "$FOLDER_NAME" =~ ^[._-] ]] || [[ "$FOLDER_NAME" =~ [._-]$ ]]; then
+    echo "⚠️  Warning: Folder name '$FOLDER_NAME' may cause Docker image naming issues."
+    echo "   Consider renaming to use only letters, numbers, dots, dashes, and underscores."
+    echo "   And avoid starting/ending with special characters."
+    echo ""
 fi
+
+# Use the detected Docker Compose command
+$DOCKER_COMPOSE_CMD up -d --build
 
 echo ""
 echo "🎉 Setup Complete!"
 echo "=================="
 echo ""
-echo "Your AI Agent LayerX stack is now running:"
+echo "Your AI Agent stack is now running:"
 echo ""
 echo "🌐 Web Interface:     http://localhost:8000"
 echo "📊 Langfuse Dashboard: http://localhost:3000"
@@ -78,12 +102,12 @@ echo "📋 Next Steps:"
 echo "1. Open http://localhost:3000 to set up Langfuse"
 echo "2. Create a project and get your API keys"
 echo "3. Update .env file with your Langfuse keys"
-echo "4. Restart the stack: docker compose restart ai-agent"
+echo "4. Restart the stack: $DOCKER_COMPOSE_CMD restart ai-agent"
 echo "5. Open http://localhost:8000 to use the AI Agent"
 echo ""
 echo "🔧 CLI Usage:"
-echo "   Generate contract: docker compose exec ai-agent ai_agent generate_contract --help"
-echo "   Review contract:   docker compose exec ai-agent ai_agent review_contract --help"
+echo "   Generate contract: $DOCKER_COMPOSE_CMD exec ai-agent ai_agent generate_contract --help"
+echo "   Review contract:   $DOCKER_COMPOSE_CMD exec ai-agent ai_agent review_contract --help"
 echo ""
 echo "📖 For more information, check the README.md file"
 echo "" 

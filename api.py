@@ -43,7 +43,7 @@ async def health_check():
     """Health check endpoint for Docker container"""
     return {
         "status": "healthy",
-        "service": "AI Agent LayerX",
+        "service": "AI Agent",
         "version": "1.0.0"
     }
 

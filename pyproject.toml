@@ -3,16 +3,16 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ai-agent-layerx"
+name = "ai-agent"
 version = "0.1.0"
 description = "AI Agent for generating and managing business contracts with web interface."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [
-    { name = "LayerX Team", email = "team@layerx.com" },
+    { name = "AI Agent Team", email = "team@example.com" },
 ]
-keywords = ["AI", "Agent", "Contract Generation", "LLM", "LayerX", "FastAPI", "Web UI", "Legal Tech"]
+keywords = ["AI", "Agent", "Contract Generation", "LLM", "FastAPI", "Web UI", "Legal Tech"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Legal Industry",
@@ -74,7 +74,7 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/layerx/ai-agent-layerx"
-Documentation = "https://github.com/layerx/ai-agent-layerx#readme"
-Repository = "https://github.com/layerx/ai-agent-layerx.git"
-Issues = "https://github.com/layerx/ai-agent-layerx/issues"
+Homepage = "https://github.com/yourusername/ai-agent"
+Documentation = "https://github.com/yourusername/ai-agent#readme"
+Repository = "https://github.com/yourusername/ai-agent.git"
+Issues = "https://github.com/yourusername/ai-agent/issues"
