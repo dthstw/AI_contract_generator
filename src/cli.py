@@ -76,6 +76,12 @@ def parse_args():
         help="Name of Party B (must not be empty)"
     )
 
+    generate_parser.add_argument(
+        "--folder_to_save",
+        default="contracts",
+        help="Folder to save the generated contract (default: contracts)"
+    )
+
     try:
         parsed_args = parser.parse_args()
         # If no subcommand is given, print help and exit

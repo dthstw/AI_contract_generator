@@ -1,10 +1,17 @@
 Metadata-Version: 2.4
 Name: ai-agent-layerx
 Version: 0.1.0
-Summary: AI Agent for generating and managing business contracts.
-Author-email: Your Name <your.email@example.com>
+Summary: AI Agent for generating and managing business contracts with web interface.
+Author-email: LayerX Team <team@layerx.com>
 License: MIT
-Keywords: AI,Agent,Contract Generation,LLM,LayerX
+Project-URL: Homepage, https://github.com/layerx/ai-agent-layerx
+Project-URL: Documentation, https://github.com/layerx/ai-agent-layerx#readme
+Project-URL: Repository, https://github.com/layerx/ai-agent-layerx.git
+Project-URL: Issues, https://github.com/layerx/ai-agent-layerx/issues
+Keywords: AI,Agent,Contract Generation,LLM,LayerX,FastAPI,Web UI,Legal Tech
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Legal Industry
+Classifier: Intended Audience :: Developers
 Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
@@ -14,14 +21,120 @@ Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
 Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
 Classifier: Topic :: Office/Business
+Classifier: Topic :: Text Processing :: Linguistic
+Classifier: Framework :: FastAPI
 Requires-Python: >=3.9
 Description-Content-Type: text/markdown
-Requires-Dist: langfuse==3.0.5
-Requires-Dist: python-dotenv==1.1.0
 Requires-Dist: openai-agents==0.0.19
 Requires-Dist: openai==1.90.0
+Requires-Dist: langfuse==3.0.5
+Requires-Dist: fastapi==0.115.14
+Requires-Dist: uvicorn[standard]==0.34.3
+Requires-Dist: python-multipart==0.0.20
+Requires-Dist: pydantic==2.11.7
+Requires-Dist: pydantic-settings==2.10.1
+Requires-Dist: python-dotenv==1.1.0
+Requires-Dist: httpx==0.28.1
+Requires-Dist: requests==2.32.4
+Requires-Dist: click==8.2.1
+Requires-Dist: typing-extensions==4.14.0
 Provides-Extra: dev
 Requires-Dist: pytest==8.4.1; extra == "dev"
 Requires-Dist: pytest-asyncio==1.0.0; extra == "dev"
-Requires-Dist: iniconfig==2.1.0; extra == "dev"
-Requires-Dist: pluggy==1.6.0; extra == "dev"
+Requires-Dist: types-requests==2.32.4.20250611; extra == "dev"
+
+# AI Agent LayerX
+
+AI Agent for generating and managing business contracts with web interface.
+
+## Installation
+
+### Option 1: Using UV (Recommended)
+```bash
+# Install UV if you don't have it
+brew install uv
+
+# Create virtual environment
+uv venv .venv
+
+# Activate virtual environment
+source .venv/bin/activate
+
+# Install the package in editable mode (includes all dependencies)
+uv pip install -e .
+
+# For development (includes testing tools)
+uv pip install -e .[dev]
+```
+
+### Option 2: Using pip
+```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+source .venv/bin/activate  # On macOS/Linux
+# or
+.venv\Scripts\activate     # On Windows
+
+# Install the package in editable mode (includes all dependencies)
+pip install -e .
+
+# For development (includes testing tools)
+pip install -e .[dev]
+```
+
+## Why install with `-e` flag?
+
+The `-e` (editable) flag is crucial because:
+- **Fixes relative imports**: The code uses relative imports that only work when properly installed
+- **Makes CLI available**: After installation, you can use `ai_agent` command anywhere
+- **Development workflow**: Changes to code are immediately available without reinstalling
+
+## Usage
+
+### Command Line Interface
+
+After installation, you can use the `ai_agent` command:
+
+```bash
+ai_agent generate_contract \
+  --contract_type lease_agreement \
+  --number_of_words 10000 \
+  --party_a "LayerX Corp" \
+  --party_b "Tenant Company"
+```
+
+### Web Interface
+
+Start the web server:
+
+```bash
+uvicorn api:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Then visit `http://localhost:8000` in your browser.
+
+## Available Contract Types
+
+- `lease_agreement`
+- `loan_agreement` 
+- (Add other types as available)
+
+## Development
+
+The project uses:
+- **FastAPI** for the web interface
+- **Langfuse** for observability and tracing
+- **OpenAI** for AI-powered contract generation
+- **Pydantic** for data validation
+
+## Configuration
+
+Create a `.env` file with your API keys:
+```env
+OPENAI_API_KEY=your_openai_key_here
+LANGFUSE_SECRET_KEY=your_langfuse_secret_key
+LANGFUSE_PUBLIC_KEY=your_langfuse_public_key
+LANGFUSE_HOST=your_langfuse_host
+```

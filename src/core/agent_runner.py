@@ -4,8 +4,9 @@ from agents import Runner, RunConfig, ModelSettings
 from prompts.dispatcher import get_prompt
 from prompts.contract_prompt import build_filename
 from custom_agents.contract_agent import create_contract_agent
-from .model_provider import OpenAIModelProvider # Correct relative import
+from core.model_provider import OpenAIModelProvider
 from langfuse import observe, get_client
+
 
 @observe
 async def run_contract(args: dict) -> str:
@@ -29,7 +30,7 @@ async def run_contract(args: dict) -> str:
 
     prompt = get_prompt(**args)
     filename = build_filename(**args)
-    agent = create_contract_agent(prompt)
+    agent = create_contract_agent(prompt, args.get("folder_to_save", "contracts"))
 
     # Calculate max_tokens dynamically based on requested number_of_words
     requested_words = args.get("number_of_words") # Get user's requested words
@@ -47,7 +48,7 @@ async def run_contract(args: dict) -> str:
             model_settings=ModelSettings(
                 temperature=float(os.getenv("OPENAI_TEMPERATURE", "0.2")),
                 max_tokens=final_max_tokens,
-            )
+            ),            
         )
 
         result = await Runner.run(
@@ -64,12 +65,12 @@ async def run_contract(args: dict) -> str:
 
         output = json.loads(result.final_output)
         message = output.get("message", "No message returned from tool.")
-        document_content = output.get("document_content", "Document content not found.") # Assuming save_tool.py provides this
+        document_content = output.get("document_content", "Document content not found.")
 
         langfuse.update_current_span(output={
             "tool_message": message,
             "filename": filename,
-            "generated_contract": document_content # Changed from _preview to full
+            "generated_contract": document_content
         })
 
         return message

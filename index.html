@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Contract Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #4f46e5;
+            border-bottom-color: #4f46e5;
+        }
+
+        .tab:hover {
+            color: #4f46e5;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .search-results {
+            margin-top: 20px;
+        }
+
+        .contract-item {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .contract-item:hover {
+            background: #f3f4f6;
+            border-color: #4f46e5;
+            transform: translateY(-2px);
+        }
+
+        .contract-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .contract-filename {
+            font-weight: 600;
+            color: #374151;
+            font-size: 1.1rem;
+        }
+
+        .contract-meta {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .contract-preview {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #374151;
+            border-left: 4px solid #4f46e5;
+        }
+
+        .view-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover {
+            background: #4338ca;
+        }
+
+        .contracts-list {
+            margin-top: 20px;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            padding: 40px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: #4f46e5;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        .contract-content {
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #374151;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #4f46e5;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 12px;
+        }
+
+        .result.error {
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
+
+        .result h3 {
+            color: #16a34a;
+            margin-bottom: 10px;
+        }
+
+        .result.error h3 {
+            color: #dc2626;
+        }
+
+        .result p {
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Contract Generator</h1>
+            <p>Generate professional contracts with AI assistance</p>
+        </div>
+
+        <div class="form-container">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('generate')">📝 Generate Contract</button>
+                <button class="tab" onclick="switchTab('search')">🔍 Search Contracts</button>
+                <button class="tab" onclick="switchTab('browse')">📁 Browse Contracts</button>
+            </div>
+
+            <!-- Generate Tab -->
+            <div id="generateTab" class="tab-content active">
+                <form id="contractForm">
+                <div class="form-group">
+                    <label for="contract_type">Contract Type</label>
+                    <select id="contract_type" name="contract_type" required>
+                        <option value="">Select contract type...</option>
+                        <option value="lease_agreement">Lease Agreement</option>
+                        <option value="outsourcing_contract">Outsourcing Contract</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="number_of_words">Number of Words</label>
+                        <input type="number" id="number_of_words" name="number_of_words" 
+                               min="100" max="5000" value="500" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="folder_to_save">Save Folder</label>
+                        <input type="text" id="folder_to_save" name="folder_to_save" 
+                               value="contracts" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="party_a">Party A</label>
+                        <input type="text" id="party_a" name="party_a" 
+                               placeholder="Enter first party name..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="party_b">Party B</label>
+                        <input type="text" id="party_b" name="party_b" 
+                               placeholder="Enter second party name..." required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Generate Contract
+                </button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Generating your contract... This may take a moment.</p>
+            </div>
+
+            <div class="result" id="result">
+                <h3 id="resultTitle">Success!</h3>
+                <p id="resultMessage"></p>
+            </div>
+            </div>
+
+            <!-- Search Tab -->
+            <div id="searchTab" class="tab-content">
+                <form id="searchForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="search_query">Search Query</label>
+                            <input type="text" id="search_query" name="query" 
+                                   placeholder="Enter text to search for..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="search_folder">Search Folder</label>
+                            <input type="text" id="search_folder" name="folder_to_search" 
+                                   value="contracts" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        🔍 Search Contracts
+                    </button>
+                </form>
+
+                <div class="loading" id="searchLoading">
+                    <div class="spinner"></div>
+                    <p>Searching contracts...</p>
+                </div>
+
+                <div id="searchResults" class="search-results"></div>
+            </div>
+
+            <!-- Browse Tab -->
+            <div id="browseTab" class="tab-content">
+                <div class="form-group">
+                    <label for="browse_folder">Browse Folder</label>
+                    <div class="form-row">
+                        <input type="text" id="browse_folder" value="contracts">
+                        <button type="button" class="submit-btn" onclick="loadContracts()" style="width: auto; margin: 0; margin-left: 10px;">
+                            📁 Load Contracts
+                        </button>
+                    </div>
+                </div>
+
+                <div class="loading" id="browseLoading">
+                    <div class="spinner"></div>
+                    <p>Loading contracts...</p>
+                </div>
+
+                <div id="contractsList" class="contracts-list"></div>
+            </div>
+        </div>
+
+        <!-- Modal for viewing contract content -->
+        <div id="contractModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Contract Details</h2>
+                    <span class="close" onclick="closeModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div id="modalContent" class="contract-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+
+        document.getElementById('contractForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Convert number_of_words to integer
+            data.number_of_words = parseInt(data.number_of_words);
+            
+            // Show loading state
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/contract`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                // Show success result
+                document.getElementById('resultTitle').textContent = 'Contract Generated Successfully!';
+                document.getElementById('resultMessage').textContent = result || 'Your contract has been generated and saved.';
+                document.getElementById('result').classList.remove('error');
+                document.getElementById('result').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                
+                // Show error result
+                document.getElementById('resultTitle').textContent = 'Error';
+                document.getElementById('resultMessage').textContent = 
+                    `Failed to generate contract: ${error.message}. Please check if the API server is running.`;
+                document.getElementById('result').classList.add('error');
+                document.getElementById('result').style.display = 'block';
+            } finally {
+                // Hide loading state
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+            }
+        });
+
+        // Add some visual feedback for form interactions
+        document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            element.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+            
+            // Load contracts when browse tab is opened
+            if (tabName === 'browse') {
+                loadContracts();
+            }
+        }
+
+        // Search functionality
+        document.getElementById('searchForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Show loading state
+            document.getElementById('searchLoading').style.display = 'block';
+            document.getElementById('searchResults').innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/search`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                displaySearchResults(result);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('searchResults').innerHTML = 
+                    `<div class="no-results">Error searching contracts: ${error.message}</div>`;
+            } finally {
+                document.getElementById('searchLoading').style.display = 'none';
+            }
+        });
+
+        // Display search results
+        function displaySearchResults(result) {
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (result.total_matches === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="no-results">
+                        No contracts found containing "${result.query}" in folder "${result.folder}"
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <h3 style="margin-bottom: 20px; color: #374151;">
+                    Found ${result.total_matches} contract(s) containing "${result.query}"
+                </h3>
+            `;
+            
+            result.results.forEach(contract => {
+                const date = new Date(contract.modified * 1000).toLocaleDateString();
+                const size = (contract.size / 1024).toFixed(1);
+                
+                html += `
+                    <div class="contract-item">
+                        <div class="contract-header">
+                            <div class="contract-filename">${contract.filename}</div>
+                        </div>
+                        <div class="contract-meta">
+                            Modified: ${date} | Size: ${size} KB
+                        </div>
+                        <div class="contract-preview">${contract.preview}</div>
+                        <button class="view-btn" onclick="viewContract('${contract.filename}', '${result.folder}')">
+                            📄 View Full Contract
+                        </button>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html;
+        }
+
+        // Load contracts for browse tab
+        async function loadContracts() {
+            const folder = document.getElementById('browse_folder').value;
+            
+            document.getElementById('browseLoading').style.display = 'block';
+            document.getElementById('contractsList').innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/contracts?folder=${encodeURIComponent(folder)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                displayContractsList(result);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('contractsList').innerHTML = 
+                    `<div class="no-results">Error loading contracts: ${error.message}</div>`;
+            } finally {
+                document.getElementById('browseLoading').style.display = 'none';
+            }
+        }
+
+        // Display contracts list
+        function displayContractsList(result) {
+            const listDiv = document.getElementById('contractsList');
+            
+            if (result.total === 0) {
+                listDiv.innerHTML = `
+                    <div class="no-results">
+                        No contracts found in folder "${result.folder}"
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <h3 style="margin-bottom: 20px; color: #374151;">
+                    ${result.total} contract(s) in "${result.folder}"
+                </h3>
+            `;
+            
+            result.contracts.forEach(contract => {
+                const date = new Date(contract.modified * 1000).toLocaleDateString();
+                const size = (contract.size / 1024).toFixed(1);
+                
+                html += `
+                    <div class="contract-item">
+                        <div class="contract-header">
+                            <div class="contract-filename">${contract.filename}</div>
+                        </div>
+                        <div class="contract-meta">
+                            Modified: ${date} | Size: ${size} KB
+                        </div>
+                        <button class="view-btn" onclick="viewContract('${contract.filename}', '${result.folder}')">
+                            📄 View Contract
+                        </button>
+                    </div>
+                `;
+            });
+            
+            listDiv.innerHTML = html;
+        }
+
+        // View contract in modal
+        async function viewContract(filename, folder) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/contracts/${encodeURIComponent(filename)}?folder=${encodeURIComponent(folder)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const contract = await response.json();
+                
+                document.getElementById('modalTitle').textContent = contract.filename;
+                document.getElementById('modalContent').textContent = contract.content;
+                document.getElementById('contractModal').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert(`Error loading contract: ${error.message}`);
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('contractModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('contractModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -16,4 +16,8 @@ src/battle.py
 src/sysarg.py
 src/argparse_test.py
 
+# Generated/temporary directories
 contracts/
+comments_net/
+comments/
+build/

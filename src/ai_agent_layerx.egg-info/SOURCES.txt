@@ -8,6 +8,7 @@ src/ai_agent_layerx.egg-info/requires.txt
 src/ai_agent_layerx.egg-info/top_level.txt
 src/core/__init__.py
 src/core/agent_runner.py
+src/core/judge.py
 src/core/model_provider.py
 src/custom_agents/__init__.py
 src/custom_agents/contract_agent.py
@@ -16,7 +17,11 @@ src/prompts/contract_prompt.py
 src/prompts/dispatcher.py
 src/tools/__init__.py
 src/tools/save_tool.py
+tests/test_agent_runner.py
 tests/test_cli.py
 tests/test_contract_prompts.py
+tests/test_contract_validation.py
 tests/test_dispatcher.py
+tests/test_model_provider.py
 tests/test_run_contract.py
+tests/test_save_tool.py

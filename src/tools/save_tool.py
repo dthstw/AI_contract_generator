@@ -51,6 +51,7 @@ def save_str_to_disc(document: str, filename: str, directory: str = "contracts")
               and a success message.
     """
     base, ext = os.path.splitext(filename)
+    os.makedirs(directory, exist_ok=True)
     path = get_unique_filename(base, ext, directory)
 
     with open(path, 'w', encoding='utf-8') as f:
@@ -59,7 +60,7 @@ def save_str_to_disc(document: str, filename: str, directory: str = "contracts")
     final_name = os.path.basename(path)
     
     return json.dumps({
-    "filename": final_name,
-    "path": path,
-    "message": f"Contract saved in `{directory}` as `{final_name}`"
+        "filename": final_name,
+        "path": path,
+        "message": f"Contract saved in `{directory}` as `{final_name}`"
     }, ensure_ascii=False)

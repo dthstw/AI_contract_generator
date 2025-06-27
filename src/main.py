@@ -3,10 +3,12 @@ from cli import parse_args
 from core.agent_runner import run_contract
 from langfuse import get_client
 from dotenv import load_dotenv
+from pydantic import BaseModel
+from typing import List, Optional
 
 load_dotenv()
 
-async def async_main():
+async def async_main(contract_request: Optional[BaseModel] = None):
     """
     Main asynchronous function to run the contract generation application.
 
@@ -17,12 +19,16 @@ async def async_main():
     langfuse = get_client()
 
     with langfuse.start_as_current_span(name="app_run") as app_span:
-        args = parse_args()
-        # Filter out the 'command' argument which is not needed by run_contract's
-        # internal functions (like get_prompt and build_filename).
-        filtered_args = vars(args).copy()
-        if 'command' in filtered_args:
-            del filtered_args['command']
+        if contract_request is None:
+            args = parse_args()
+            # Filter out the 'command' argument which is not needed by run_contract's
+            # internal functions (like get_prompt and build_filename).
+            filtered_args = vars(args).copy()
+            if 'command' in filtered_args:
+                del filtered_args['command']
+        else:
+            # contract_request.model_dump() already returns a dict, so use it directly
+            filtered_args = contract_request.model_dump()
         app_span.update_trace(input=filtered_args) # Correctly pass filtered args for trace input
 
 
@@ -39,13 +45,12 @@ async def async_main():
 
     langfuse.flush()
 
-def main(): # This is the synchronous entry point for pyproject.toml
+def main(contract_request: Optional[BaseModel] = None): 
     """
     Synchronous entry point for the command-line interface.
     It runs the async_main coroutine using asyncio.
     """
-    asyncio.run(async_main())
+    asyncio.run(async_main(contract_request))
 
 if __name__ == "__main__":
-    # This block is executed when the script is run directly (e.g., `python src/main.py`).
     main()
