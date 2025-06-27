@@ -416,13 +416,13 @@ class TestRunContractIntegration:
             assert "lease_agreement_" in input
             assert "TestCorp" in input or "TestTenant" in input
             
-                                      # Verify run_config structure
-             assert isinstance(run_config, RunConfig)
-             assert hasattr(run_config, 'model_provider')
-             assert hasattr(run_config, 'model_settings')
-             assert run_config.model_settings is not None
-             assert run_config.model_settings.temperature == 0.2  # Default
-             assert run_config.model_settings.max_tokens == 2640  # 1200 * 2.0 * 1.1
+            # Verify run_config structure
+            assert isinstance(run_config, RunConfig)
+            assert hasattr(run_config, 'model_provider')
+            assert hasattr(run_config, 'model_settings')
+            assert run_config.model_settings is not None
+            assert run_config.model_settings.temperature == 0.2  # Default
+            assert run_config.model_settings.max_tokens == 2640  # 1200 * 2.0 * 1.1
             
             return FakeResult()
 

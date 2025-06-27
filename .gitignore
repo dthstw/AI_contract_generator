@@ -6,6 +6,9 @@
 .venv/
 venv/
 
+# Python build artifacts
+*.egg-info/
+
 # Logs and junk
 *.log
 __pycache__/

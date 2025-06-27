@@ -18,8 +18,8 @@ AI-powered Japanese business contract generator with web interface and CLI tools
 ## Quick Start
 
 ```bash
-git clone https://github.com/yourusername/AI_Agent_fin.git
-cd AI_Agent_fin
+git clone <your-repository-url>
+cd <your-project-directory>
 chmod +x setup.sh
 ./setup.sh
 ```
@@ -32,6 +32,21 @@ The setup script will:
 **Access:**
 - Web Interface: http://localhost:8000
 - Langfuse Dashboard: http://localhost:3000
+
+## Running the Project
+
+If everything is already set up, simply start the services:
+
+```bash
+# Start all services
+docker compose up -d
+
+# Check if services are running
+docker compose ps
+
+# Stop services when done
+docker compose down
+```
 
 ## Configuration
 
@@ -61,17 +76,46 @@ LANGFUSE_SECRET_KEY=sk-lf-your-keys-here
 3. Generate contract
 
 ### CLI
+
+The CLI works seamlessly alongside the web interface with shared configuration and tracing.
+
 ```bash
-docker compose exec ai-agent ai_agent generate_contract \
+# 1. Activate virtual environment (REQUIRED)
+source .venv/bin/activate
+
+# 2. Install dependencies if not already done
+pip install -r requirements.txt
+
+# 3. Generate contract
+ai_agent \
+  generate_contract \
   --contract_type lease_agreement \
   --number_of_words 1000 \
   --party_a "Company A" \
   --party_b "Company B"
 ```
 
+**Quick usage options:**
+```bash
+# One-liner
+source .venv/bin/activate && ai_agent generate_contract --contract_type lease_agreement --number_of_words 1000 --party_a "Company A" --party_b "Company B"
+
+# Create an alias for repeated use
+alias ai_agent_cli='source .venv/bin/activate && ai_agent'
+ai_agent_cli generate_contract --contract_type lease_agreement --number_of_words 1000 --party_a "Company A" --party_b "Company B"
+```
+
+**Note:** If Docker services are not running, add `export TELEMETRY_ENABLED=false` before the command for cleaner output.
+
 **Contract Types:**
 - `lease_agreement` - Japanese lease agreements
 - `outsourcing_contract` - Business outsourcing contracts
+
+**Benefits of unified configuration:**
+- ✅ CLI and web interface share the same `contracts/` folder
+- ✅ Both use identical AI model settings and API keys
+- ✅ All operations traced in the same Langfuse dashboard
+- ✅ No environment switching needed between CLI and web usage
 
 ## Troubleshooting
 
@@ -92,6 +136,12 @@ langfuse-web:
 - **Services won't start**: `docker compose ps` to check status
 - **OpenAI errors**: Verify API key and billing
 - **Langfuse connection**: Ensure keys are correct in `.env`
+
+### CLI Issues
+- **Connection timeout errors**: Wait 30-60 seconds after `docker compose up` for Langfuse to fully start
+- **Command not found**: Activate virtual environment with `source .venv/bin/activate`
+- **Missing dependencies**: Run `pip install -r requirements.txt` in activated venv
+- **No tracing when Docker is off**: Add `export TELEMETRY_ENABLED=false` for standalone CLI usage
 
 ## Development
 

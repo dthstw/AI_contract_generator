@@ -67,23 +67,26 @@ class TestRunContract:
         # Verify function calls
         mock_get_prompt.assert_called_once_with(**args)
         mock_build_filename.assert_called_once_with(**args)
-        mock_create_agent.assert_called_once_with("Test prompt for contract generation")
+        mock_create_agent.assert_called_once_with("Test prompt for contract generation", "contracts")
         
         # Verify Runner.run was called with correct parameters
         mock_runner_run.assert_called_once()
-        call_args = mock_runner_run.call_args
         
-        # Check agent argument
-        assert call_args[1]['agent'] == mock_agent
+        # Check that the call was made with the expected arguments
+        # The actual call is: Runner.run(agent, input=..., run_config=...)
+        call_args, call_kwargs = mock_runner_run.call_args
         
-        # Check input contains expected elements
-        input_text = call_args[1]['input']
+        # Check agent argument (first positional argument)
+        assert call_args[0] == mock_agent
+        
+        # Check input contains expected elements (keyword argument)
+        input_text = call_kwargs['input']
         assert "Write at least 1000 of japanese words" in input_text
         assert "test_contract_20241201.txt" in input_text
         assert "save_str_to_disc" in input_text
         
-        # Check run_config
-        run_config = call_args[1]['run_config']
+        # Check run_config (keyword argument)
+        run_config = call_kwargs['run_config']
         assert isinstance(run_config, RunConfig)
         
         # Verify Langfuse span update

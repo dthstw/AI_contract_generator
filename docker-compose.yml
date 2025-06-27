@@ -169,7 +169,7 @@ services:
       - "8000:8000"
     environment:
       # Langfuse Configuration
-      LANGFUSE_HOST: http://langfuse-web:3000
+      LANGFUSE_HOST: ${LANGFUSE_HOST:-http://langfuse-web:3000}
       LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
       LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
       
